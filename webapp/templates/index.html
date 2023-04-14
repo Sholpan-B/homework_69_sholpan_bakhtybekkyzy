@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>Homework_69</title>
+</head>
+<body>
+    <div class="container">
+        {% csrf_token %}
+        <h1>Calculator</h1>
+        <div>
+            {% csrf_token %}
+            <label for="input_a">Number A:</label>
+            <input id="input_a" type="text">
+        </div>
+        <br>
+        <div>
+            <label for="input_b">Number B:</label>
+            <input id="input_b" type="text">
+        </div>
+        <br>
+        <div>
+            <button id="add-btn" data-url="{% url 'add' %}">Add</button>
+            <button id="subtract-btn" data-url="{% url 'subtract' %}">Subtract</button>
+            <button id="multiply-btn" data-url="{% url 'multiply' %}">Multiply</button>
+            <button id="divide-btn" data-url="{% url 'divide' %}">Divide</button>
+        </div>
+        <br>
+        <div>
+            <label for="answer">Answer:</label>
+            <span id="answer"></span>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+
+            const csrf = $("input[name=csrfmiddlewaretoken]").val();
+
+            $('button').click(function() {
+                const a = $('#input_a').val();
+                const b = $('#input_b').val();
+                const url = $(this).data('url');
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'X-CSRFToken': csrf
+                    },
+                    data: JSON.stringify({
+                        'A': a,
+                        'B': b
+                    }),
+                    success: function(data) {
+                        $('#answer').text(data['answer']);
+                        $('#answer').css('color', 'green');
+                    },
+                    error: function(data) {
+                        $('#answer').text(data.responseJSON['error']);
+                        $('#answer').css('color', 'red');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
