@@ -1,6 +1,5 @@
 import json
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 
 def get_numbers(request, *args, **kwargs):
